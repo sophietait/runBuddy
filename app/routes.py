@@ -1,31 +1,19 @@
-from flask import render_template
 from app import app
-from . import models
+from app import APP_EXAMPLE
+from flask import request
+from models import run_data
 import json
+import os
 
 
-@app.route('/')
-@app.route('/index')
-def index():
-    user = {'username': 'User'}
-    posts = [
-        {
-            'author': {'username': 'Alex'},
-            'body': 'Beautiful day in San Francisco!'
-        },
-        {
-            'author': {'username': 'CJ'},
-            'body': 'The Avengers movie was cool!'
-        }
-    ]
-    return render_template('index.html', title='Home', user=user, posts=posts) 
 
 
-@app.route('/run1/coordinates', methods=['GET'])
-def getrun1data():
-    run1 = models.runData('models/examples/run2.csv')
+@app.route('/runData', methods=['GET'])
+def getRunData():
+    requested_file = request.args.get('file')
+    run1 = run_data.RunData(os.path.join(APP_EXAMPLE, requested_file))
     response = app.response_class(
-        response= json.dumps(run1.getLatLong()),
+        response=json.dumps(run1.getData()),
         status=200,
         mimetype='application/json'
     )
