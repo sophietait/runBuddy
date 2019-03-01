@@ -1,11 +1,12 @@
 import csv
+from functools import reduce
 
 
-class RunData():
+class RunData:
     headerData = dict()
 
-    def __init__(self, fileName: str):
-        with open(fileName, newline='') as csvfile:
+    def __init__(self, file_name: str):
+        with open(file_name, newline='') as csvfile:
             reader = csv.reader(csvfile, delimiter=',')
             headers = next(reader, None)  # this discards the header row
             for x in headers:
@@ -23,25 +24,37 @@ class RunData():
                 self.headerData['heartRate'].append(row[9])
                 self.headerData['cycles'].append(row[10]) # unit is strides/second
 
-    def getData(self):
+    def get_data(self):
         return self.headerData
 
-    def getTotalDistance(self):
-        totalDistance = self.headerData['distance'][-1]
-        return totalDistance
+    def get_total_distance(self):
+        total_distance = self.headerData['distance'][-1]
+        return total_distance
 
-    def getTotalSpeed(self):
-        fastestSpeed = {'max_speed': max(self.headerData['speed'])}
-        return fastestSpeed
+    def get_total_time(self):
+        total_time = self.headerData['time'][-2]
+        return total_time
 
-    def getAvgSpeed(self):
-        allSpeeds = {"hi": []}
+    def get_rate(self):
+        rate = float(self.get_total_distance())/float(self.get_total_time())
+        return 26.8224/rate  # converts meters per second(m/s) to minutes per mile (min/mile)
+
+    def get_fastest_speed(self):
+        fastest_speed = {'max_speed': max(self.headerData['speed'])}
+        return fastest_speed
+
+    def get_avg_speed(self):
+        all_speeds = []
         for x in self.headerData['speed']:
-            allSpeeds["hi"].append(x)
-        return allSpeeds
-   
-    def getLatLong(self):
-        latLong = {"hi": []}
+            all_speeds.append(x)
+        filtered_speeds = list(filter(None, all_speeds))
+        float_speeds = list(map(lambda x: float(x), filtered_speeds))
+        sum_speeds = reduce((lambda x,y: x + y), float_speeds)
+        avg_speed = sum_speeds/len(float_speeds)
+        return avg_speed
+
+    def get_lat_long(self):
+        lat_long = {"hi": []}
         for lat, lon in zip(self.headerData['lat'], self.headerData['long']):
-            latLong["hi"].append((lat, lon))
-        return latLong
+            lat_long["hi"].append((lat, lon))
+        return lat_long
