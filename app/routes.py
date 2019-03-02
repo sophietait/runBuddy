@@ -5,6 +5,11 @@ from models import run_data
 import json
 import os
 
+@app.route('/')
+@app.route('/index')
+def index():
+    return "hello"
+
 
 @app.route('/runData', methods=['GET'])
 def get_run_data():
