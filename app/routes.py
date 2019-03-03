@@ -1,6 +1,7 @@
 from app import app
 from app import APP_EXAMPLE
 from flask import request
+from flask import render_template
 from models import run_data
 import json
 import os
@@ -8,7 +9,7 @@ import os
 @app.route('/')
 @app.route('/index')
 def index():
-    return "hello"
+    return render_template('index.html')
 
 
 @app.route('/runData', methods=['GET'])
