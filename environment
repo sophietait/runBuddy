@@ -1,0 +1,11 @@
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ] ; do SOURCE="$(readlink "$SOURCE")"; done
+export RUNBUDDY_HOME="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+
+set -a
+AWS_DEFAULT_REGION=us-west-1
+AWS_DEFAULT_OUTPUT=json
+RUNDATA_BUCKET=runbuddy-dev
+FLASK_APP=app/app.py
+FLASK_ENV=development
+set +a
