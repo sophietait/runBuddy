@@ -8,6 +8,7 @@ from models import run_data
 import json
 import os
 import boto3
+import uploader
 
 
 def allowed_file(filename: str):
@@ -31,6 +32,11 @@ def rundata():
         return res
 
 
+def get_run_data2():
+    requested_file = request.args.get('file', 'run1.csv')
+    uploader.getcsvDataS3()
+
+    
 def get_run_data():
     requested_file = request.args.get('file', 'run1.csv')
     run1 = run_data.RunData(os.path.join(APP_EXAMPLE, requested_file))
@@ -59,4 +65,6 @@ def upload_run_data():
         s3.upload_fileobj(f, bucket_name, full_obj_key)
         return app.response_class(status=201, response='OK')
     return app.response_class(status=500, response="error")
+
+
 
